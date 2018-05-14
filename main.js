@@ -217,6 +217,9 @@ player_1.move_bullets = function(){
 
 
 
+
+
+
 let player_2 = {
     ele : create_player(stage_ele, "player2"),
     y : 0,
@@ -339,9 +342,10 @@ let enemies = {
     line_count : 8,
     rows : 4, 
     alive : 8 * 4,
+    max_alive : 8 * 4,
     arr : [],
     height_incr : 90,
-    width_incr : 160,
+    width_incr : 110,
     coords : {
         x_min : 0,
         x_max : 0,
@@ -356,10 +360,13 @@ let enemies = {
     bullet_speed : 10,
 }
 enemies.alive = enemies.line_count * enemies.rows
+enemies.max_alive = enemies.line_count * enemies.rows
 enemies.speed_incr = function(){
     // enemies.step_CD = (enemies.alive * 10) + (enemies.step_down * 10);
     // enemies.step_down = enemies.step_down - 4;
-    enemies.step_CD = (enemies.step_CD * enemies.step_factor);
+    let factor = ( enemies.alive / enemies.max_alive )
+    console.log(factor)
+    enemies.step_CD = (enemies.step_CD ) * (1 - (factor / 2)) ;
     // enemies.step_factor = (enemies.step_factor * 2)
 }
 function create_enemy(parent, x, y){
@@ -746,20 +753,23 @@ var Key = {
 };
 
 
-window.addEventListener('keyup', function(event) { console.log(event.keyCode); Key.onKeyup(event); }, false);
-window.addEventListener('keydown', function(event) { console.log(event.keyCode);  Key.onKeydown(event); }, false);
+window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
+window.addEventListener('keydown', function(event) {  Key.onKeydown(event); }, false);
 
 function check_keys(timestamp) {
     if(game.paused){
         if (Key.isDown(Key.PAUSE)) toggle_pause(timestamp);        
     }else{
-        if (Key.isDown(Key.P1_SHOOT)) player_1.shoot(timestamp);
-        if (Key.isDown(Key.P1_LEFT)) player_1.left();
-        if (Key.isDown(Key.P1_RIGHT)) player_1.right();
-    
-        if (Key.isDown(Key.P2_SHOOT)) player_2.shoot(timestamp);
-        if (Key.isDown(Key.P2_LEFT)) player_2.left();
-        if (Key.isDown(Key.P2_RIGHT)) player_2.right();
+        if(player_1.lives > -1){
+            if (Key.isDown(Key.P1_SHOOT)) player_1.shoot(timestamp);
+            if (Key.isDown(Key.P1_LEFT)) player_1.left();
+            if (Key.isDown(Key.P1_RIGHT)) player_1.right();
+        }
+        if(player_2.lives > -1){
+            if (Key.isDown(Key.P2_SHOOT)) player_2.shoot(timestamp);
+            if (Key.isDown(Key.P2_LEFT)) player_2.left();
+            if (Key.isDown(Key.P2_RIGHT)) player_2.right();
+        }
 
         if (Key.isDown(Key.PAUSE)) toggle_pause(timestamp);
     }
