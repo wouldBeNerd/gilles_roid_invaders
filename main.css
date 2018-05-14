@@ -2,7 +2,7 @@
     font-family: pixel_font;
     src: url(fonts/PressStart2P.ttf);
 }
-body, p, div{
+body, p{
     background-color: #000;
     color : white;
     font-family: pixel_font;
@@ -23,7 +23,21 @@ img {
 span {
     font-size : 30px;
 }
-
+#stars {
+    position : fixed;
+    z-index: -10000 !important;
+    width : 100%;
+    height : 100%;
+}
+.star {
+    position : fixed;
+    width : 1px;
+    height : 1px;
+    border: 1px style solid;
+    border-radius: 1px;
+    color : #eee;
+    background-color: #eee;
+}
 .left {
     position : relative;
     float: left;
@@ -33,6 +47,11 @@ span {
     position : relative;
     
     float: right;
+}
+.middle {
+    position : fixed;
+    
+    left : 50% 
 }
 .player1{
     width: 100px;
@@ -128,8 +147,65 @@ span {
     background-color: #1a1bae;
 }
 
+.main_menu {
+    position:fixed;
+    background-color:rgba(20, 20, 20, 1);
+    /* width : 300px; */
+    /* height : 150px; */
+    margin-left : 20%;
+    margin-top : 10%; 
+    width : 60%;
+    height: 35%;
+    border: 2px solid #fff;    
+    padding-top: 25px;
 
+    text-align: center;
+    vertical-align: middle; 
+}
 
+.menu_bt{
+    position: relative;
+    display: block;
+    /* width:fit-content; */
+    text-align: center;
+    /* vertical-align: middle;      */
+    background-color: rgba(120, 120, 120, 0);
+    cursor: pointer;
+    margin-bottom : 50px;
+}
+.menu_bt :hover{
+    background-color:rgba(120, 120, 120, 1);    
+}
+.player_controls_cont {
+    position : relative;
+    display: inline-block;
+    background-color: rgba(120, 120, 120, 0);
+    /* border: 2px solid #fff;     */
+    width : 50%;
+    height : auto;
+    
+}
+.block {
+    /* padding-top : 25px; */
+    display : block;
+    position: relative;
+    text-align: center;
+    margin-bottom : 45px;
+    background-color: rgba(120, 120, 120, 0);
+    
+    /* vertical-align: middle;  */
+}
+
+.inline_block {
+    /* padding-top : 25px;     */
+    display : inline-block;
+    position: relative;
+    width : auto;
+    margin-bottom : 25px;
+    background-color: rgba(120, 120, 120, 0);
+    
+    
+}
 .pause {
     position:fixed;
     background-color:rgba(20, 20, 20, 1);
