@@ -20,6 +20,9 @@ img {
     border-width: 0px
     
 }
+span {
+    font-size : 30px;
+}
 
 .left {
     position : relative;
@@ -37,6 +40,13 @@ img {
     content:url("./assets/player1.png");
     position: fixed;
 }
+.player1_icon {
+    position : relative;    
+    display: inline-block;        
+    width: 40px;
+    height: 40px;
+    content:url("./assets/player1.png");    
+}
 .player2 {
     width: 100px;
     height: 100px;
@@ -44,11 +54,41 @@ img {
     position: fixed;
 
 }
+.player2_icon {
+    position : relative;
+    display: inline-block;        
+    width: 40px;
+    height: 40px;
+    content:url("./assets/player2.png");    
+}
 .enemy {
     content:url("./assets/enemy.png");
     position: fixed;    
 }
 
+@keyframes rotate_continuous {
+    from {
+        transform: rotate(0deg);
+        transform-origin: center;
+    
+    }
+    to {
+        transform: rotate(360deg);
+        transform-origin: center;
+    
+    }
+}
+
+.enemy_bullet {
+    width : 18px;
+    height : 18px;
+    content:url("./assets/enemy.png");
+
+    animation-name : rotate_continuous;
+    animation-duration : 10s;
+    animation-iteration-count:  infinite;
+    
+}
 
 .bullet1 {
 	width: 20px;

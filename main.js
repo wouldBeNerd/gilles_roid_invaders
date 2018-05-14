@@ -1,3 +1,33 @@
+let audio = {
+    mute : false,
+    enemies_moves : [
+        new Audio("./audio/fastinvader1.wav"),
+        new Audio("./audio/fastinvader2.wav"),
+        new Audio("./audio/fastinvader3.wav"),
+        new Audio("./audio/fastinvader4.wav")
+    ],
+    enemies_moves_count : 0,
+    player_1_shoot_audio: new Audio("./audio/shoot.wav"),
+    player_2_shoot_audio: new Audio("./audio/shoot.wav")
+}
+audio.play_enemies_move = function(){
+    if(audio.mute){ return ;}
+    if(audio.enemies_moves_count === 4){audio.enemies_moves_count = 0}
+    audio.enemies_moves[audio.enemies_moves_count].play()
+    audio.enemies_moves_count++;
+}
+audio.player_1_shoot = function(){
+    audio.player_1_shoot_audio.play()
+}
+audio.player_2_shoot = function(){
+    audio.player_2_shoot_audio.play()
+}
+
+
+
+
+
+
 
 let w=window,
 d=document,
@@ -73,16 +103,32 @@ console.log(width, height)
 
 
 
+function player_icon(parent, className, inner_before ,inner_after, color){
+    let span = document.createElement("span")
+    if(inner_before){span.innerHTML = inner_before}
+    let icon = document.createElement("div")
+    icon.classList.add(className)
+    span.appendChild(icon)
+    if(inner_after){span.innerHTML += inner_after}
+    if(color) span.style.color = color    
+    parent.appendChild(span)
+    return span
+}
 
 
 
 
-
-
+let player_WH = 80
 let player_1 = {
+    invincible : false,
+    invincible_dur : 0,
     ele : create_player(stage_ele, "player1"),
     y : 0,
     x : 0,
+    WH : player_WH,
+    WH_half : player_WH/2,
+    left_hitbox : 7,
+    right_hitbox : player_WH-7,
     speed : 10,
     bullet_count : 3,
     bullet_speed : 15,
@@ -92,29 +138,39 @@ let player_1 = {
     score: 0,
     lives: 3,
     UI : {
-        name_ele:add_UI_span(player_1_ui, "Player 1", "red"),
-        score_title: add_UI_span(player_1_ui, " Score:"),
-        score_ele: add_UI_span(player_1_ui, 0) 
+        // name_ele:add_UI_span(player_1_ui, "Player 1", "red"),
+        lives_title : player_icon(player_1_ui, "player1_icon", "P1 ", ":", "red"),
+        lives_ele: add_UI_span(player_1_ui, 0, "red"),         
+        score_title: add_UI_span(player_1_ui, " S:", "red"),
+        score_ele: add_UI_span(player_1_ui, 0, "red"), 
     },
     bullet_class : "bullet1",      
     player_class : "player1"      
 }
-player_1.half_width = 80 / 2
 player_1.add_score = function(points){ 
     player_1.score += points
     player_1.UI.score_ele.innerHTML = player_1.score
-
 }
+player_1.add_lives = function(lives){
+    player_1.lives += lives
+    player_1.UI.lives_ele.innerHTML = player_1.lives
+}
+player_1.remove_lives = function(lives){
+    player_1.lives -= lives
+    player_1.UI.lives_ele.innerHTML = player_1.lives
+}
+player_1.add_lives(0)
+
 player_1.x = set_player_x( player_1.ele, width/2 - player_offset.x)
 player_1.y = set_player_y( player_1.ele, height - player_offset.y)
 player_1.left = function(){
-    if(player_1.x + player_1.half_width < 0){ return;}        
+    if(player_1.x + player_1.WH_half < 0){ return;}        
     let new_x = player_1.x - player_1.speed
     set_player_x(player_1.ele, new_x);
     player_1.x = new_x
 }
 player_1.right = function(){
-    if(player_1.x + player_1.half_width > width){ return;}        
+    if(player_1.x + player_1.WH_half > width){ return;}        
     let new_x = player_1.x + player_1.speed
     set_player_x(player_1.ele, new_x);
     player_1.x = new_x
@@ -134,6 +190,7 @@ player_1.shoot = function(timestamp){
             }
         )
         player_1.next_shot = timestamp + player_1.bullet_CD
+        audio.player_1_shoot()
     }
 }
 player_1.move_bullets = function(){
@@ -164,6 +221,10 @@ let player_2 = {
     ele : create_player(stage_ele, "player2"),
     y : 0,
     x : 0,
+    WH : player_WH,
+    WH_half : player_WH/2,
+    left_hitbox : 7,
+    right_hitbox : player_WH-7,
     speed : 10,
     bullet_count : 3,
     bullet_speed : 15,
@@ -173,30 +234,40 @@ let player_2 = {
     score: 0,
     lives: 3,    
     UI : {
-        name_ele:add_UI_span(player_2_ui, "Player 2", "blue"),
-        score_title: add_UI_span(player_2_ui, " Score:"),
-        score_ele: add_UI_span(player_2_ui, 0) 
+        // name_ele:add_UI_span(player_2_ui, "Player 2", "red"),
+        lives_title : player_icon(player_2_ui, "player2_icon", "P2 ", ":", "blue"),
+        lives_ele: add_UI_span(player_2_ui, 0, "blue"),         
+        score_title: add_UI_span(player_2_ui, " S:", "blue"),
+        score_ele: add_UI_span(player_2_ui, 0, "blue"), 
     },
     bullet_class : "bullet2",
     player_class : "player2"      
         
 }
-player_2.half_width = 80 / 2
 player_2.add_score = function(points){ 
     player_2.score += points
     player_2.UI.score_ele.innerHTML = player_2.score
-
 }
+player_2.add_lives = function(lives){
+    player_2.lives += lives
+    player_2.UI.lives_ele.innerHTML = player_2.lives
+}
+player_2.remove_lives = function(lives){
+    player_2.lives -= lives
+    player_2.UI.lives_ele.innerHTML = player_2.lives
+}
+player_2.add_lives(0)
+
 player_2.x = set_player_x( player_2.ele, width/2 - player_offset.x)
 player_2.y = set_player_y( player_2.ele, height - player_offset.y)
 player_2.left = function(){
-    if(player_2.x + player_2.half_width < 0){ return;}
+    if(player_2.x + player_2.WH_half < 0){ return;}
     let new_x = player_2.x - player_2.speed
     set_player_x(player_2.ele, new_x);
     player_2.x = new_x
 }
 player_2.right = function(){
-    if(player_2.x + player_2.half_width > width){ return; }   
+    if(player_2.x + player_2.WH_half > width){ return; }   
     let new_x = player_2.x + player_2.speed
     set_player_x(player_2.ele, new_x);
     player_2.x = new_x
@@ -216,6 +287,7 @@ player_2.shoot = function(timestamp){
             }
         )
         player_2.next_shot = timestamp + player_2.bullet_CD
+        audio.player_2_shoot()
     }
 }
 player_2.move_bullets = function(){
@@ -255,9 +327,10 @@ player_2.move_bullets = function(){
 let enemy = {
     width : 80,
     height : 80, 
+    half_width : 40
 }
 let enemies = {
-    step_CD : 800,
+    step_CD : 500,
     step_factor : 0.9,
     right : false,
     next_step : 0,
@@ -265,6 +338,7 @@ let enemies = {
     speed : 50,
     line_count : 8,
     rows : 4, 
+    alive : 8 * 4,
     arr : [],
     height_incr : 90,
     width_incr : 160,
@@ -277,10 +351,15 @@ let enemies = {
     rightest_x : 0,
     leftest_x : width + 1,
     down : false,
-    random_attack_ms : 15000,
+    random_attack_ms : 9000,
+    bullets : [],
+    bullet_speed : 10,
 }
+enemies.alive = enemies.line_count * enemies.rows
 enemies.speed_incr = function(){
-    enemies.step_CD = enemies.step_CD * enemies.step_factor;
+    // enemies.step_CD = (enemies.alive * 10) + (enemies.step_down * 10);
+    // enemies.step_down = enemies.step_down - 4;
+    enemies.step_CD = (enemies.step_CD * enemies.step_factor);
     // enemies.step_factor = (enemies.step_factor * 2)
 }
 function create_enemy(parent, x, y){
@@ -297,8 +376,8 @@ function create_enemy(parent, x, y){
     enemy_ele.style.height = enemy.height+"px";
     return enemy_ele
 }
-enemies.renew_random_shot = function(timestamp){
-    return timestamp + Math.floor(Math.random()* enemies.random_attack_ms );
+enemies.renew_random_shot_time = function(timestamp){
+    return (timestamp||0) + Math.floor(Math.random()* enemies.random_attack_ms );
 }
 enemies.create = function(){
     let start_width = (width / 2) - ((enemies.line_count / 2) * enemies.width_incr)//calculate position from middle of screen 
@@ -323,12 +402,12 @@ enemies.create = function(){
                 points : 100,
                 x : x,
                 y : y,
-                shoot : Math.floor(Math.random()*20000),
+                shoot_time : enemies.renew_random_shot_time(0),
                 ele : create_enemy(stage_ele, x, y)
             }
         })
     })
-    console.log(enemies.coords)
+    // console.log(enemies.coords)
 }
 function move_enemy_right(){
     return function(enemy, speed){
@@ -376,6 +455,7 @@ enemies.move = function(timestamp){
                 down_fn(ene, enemies.speed)
             })
         })
+        audio.play_enemies_move()        
         if(enemies.down){
             enemies.down = false;
             enemies.speed_incr()
@@ -392,10 +472,19 @@ enemies.move = function(timestamp){
         enemies.next_step = timestamp + enemies.step_CD
     }
 }
-
-
-
 enemies.create()
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 function relative_to_factor(x, to_x_min, to_x_max, segments){
@@ -436,6 +525,7 @@ function check_bullet_collision(){
                             stage_ele.removeChild(bullet.ele)
                             delete bullet.ele;
                             ene.alive = false;
+                            enemies.alive--;
                             bullet.alive = false;
                             player_1.add_score(ene.points)
                             return;
@@ -472,6 +562,7 @@ function check_bullet_collision(){
                             stage_ele.removeChild(bullet.ele)
                             delete bullet.ele;
                             ene.alive = false;
+                            enemies.alive--;                            
                             bullet.alive = false;
                             player_2.add_score(ene.points)
                             return;
@@ -515,6 +606,81 @@ function remove_the_dead(){
     // }
     // console.log(enemies.arr.length, ret_l(enemies.arr[0]), ret_l(enemies.arr[1]), ret_l(enemies.arr[2]), ret_l(enemies.arr[3]))
 }
+
+
+function enemy_shoot(ene){
+    if(ene.y < height){
+        let bullet = document.createElement("div")
+        bullet.classList.add("enemy_bullet")    
+        let random_x = Math.floor(Math.random()*enemy.width)
+        let x = (ene.x + random_x);
+        let y = (ene.y + enemy.height)
+        bullet.style.left = x+"px"
+        bullet.style.top = y+"px"
+        stage_ele.appendChild(bullet)
+        enemies.bullets.push({
+            alive : true,
+            x : x,
+            y : y,
+            ele : bullet
+        })
+    }
+}
+enemies.check_shoot_time = function(timestamp){
+    enemies.arr.forEach(function(row_arr){
+        row_arr.forEach(function(ene){
+            if(timestamp > ene.shoot_time && ene.alive){
+                enemy_shoot(ene)
+
+
+                ene.shoot_time = enemies.renew_random_shot_time(timestamp);
+                
+            }
+        })
+    })
+}
+
+enemies.move_bullets = function(){
+    enemies.bullets.forEach(function(bullet){
+        if(bullet.alive){
+            bullet.y = bullet.y + enemies.bullet_speed;
+            if(bullet.y > height){
+                bullet.alive = false
+                stage_ele.removeChild(bullet.ele)
+            }else{
+                bullet.ele.style.top = bullet.y+"px"
+            }
+        }
+    })
+}
+enemies.remove_dead_bullets = function(){
+    enemies.bullets = enemies.bullets.filter(function(bullet){
+        if(bullet.alive) return bullet
+    })
+}
+enemies.detect_bullets_collide = function(){
+    enemies.bullets.forEach(function(bullet){
+      if(bullet.y >= player_1.y && bullet.alive){
+          if(bullet.x > player_1.left_hitbox + player_1.x && bullet.x < player_1.right_hitbox  + player_1.x ){
+                bullet.alive = false
+                stage_ele.removeChild(bullet.ele)                
+                player_1.remove_lives(1)
+
+          }
+      }  
+      if(bullet.y >= player_2.y && bullet.alive){
+        if(bullet.x > player_2.left_hitbox + player_2.x && bullet.x < player_2.right_hitbox  + player_2.x ){
+              bullet.alive = false
+              stage_ele.removeChild(bullet.ele)                
+              player_2.remove_lives(1)
+
+        }
+    }        
+    })
+}
+
+
+
 function paused_element(parent){
     let div = document.createElement("div");
     div.classList.add("pause");
@@ -580,8 +746,8 @@ var Key = {
 };
 
 
-window.addEventListener('keyup', function(event) { Key.onKeyup(event); }, false);
-window.addEventListener('keydown', function(event) { Key.onKeydown(event); }, false);
+window.addEventListener('keyup', function(event) { console.log(event.keyCode); Key.onKeyup(event); }, false);
+window.addEventListener('keydown', function(event) { console.log(event.keyCode);  Key.onKeydown(event); }, false);
 
 function check_keys(timestamp) {
     if(game.paused){
@@ -611,7 +777,7 @@ function step(timestamp) {
   if (!start) start = timestamp;
   var progress = timestamp - start;
 //   element.style.left = Math.min(progress / 10, 200) + 'px';
-
+    // console.log(timestamp)
     timestamp = game_paused(timestamp) //overwrites timestamp with paused timestamp
     check_keys(timestamp)
     if(game.paused){
@@ -619,9 +785,13 @@ function step(timestamp) {
     }else{
         player_2.move_bullets()
         player_1.move_bullets()
+        enemies.move_bullets()
+        enemies.detect_bullets_collide()
+        enemies.remove_dead_bullets()
         enemies.move(timestamp)
         check_bullet_collision()
         remove_the_dead()
+        enemies.check_shoot_time(timestamp)
     }    
 //   if (progress < 2000) {
     window.requestAnimationFrame(step);
