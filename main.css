@@ -1,0 +1,216 @@
+@font-face{
+    font-family: pixel_font;
+    src: url(fonts/PressStart2P.ttf);
+}
+body, p, div{
+    background-color: #000;
+    color : white;
+    font-family: pixel_font;
+}
+div {
+    position: fixed;
+    padding: 0px;
+    margin: 0px;
+    border-width: 0px
+}
+img {
+    background:transparent;
+    padding: 0px;
+    margin: 0px;    
+    border-width: 0px
+    
+}
+
+.left {
+    position : relative;
+    float: left;
+}
+
+.right {
+    position : relative;
+    
+    float: right;
+}
+.player1{
+    width: 100px;
+    height: 100px;
+    content:url("./assets/player1.png");
+    position: fixed;
+}
+.player2 {
+    width: 100px;
+    height: 100px;
+    content:url("./assets/player2.png");
+    position: fixed;
+
+}
+.enemy {
+    content:url("./assets/enemy.png");
+    position: fixed;    
+}
+
+
+.bullet1 {
+	width: 20px;
+	height: 50px;
+	/* background: red; */
+	-moz-border-radius: 100px / 50px;
+	-webkit-border-radius: 100px / 50px;
+    border-radius: 100px / 50px;
+    
+    background: linear-gradient(to middle, rgba(255,0,0,0), rgba(255,0,0,1));
+
+}
+
+/* Cleaner, but slightly less support: use "50%" as value */
+					
+.bullet1 {
+    background-color: #ae1b1a;
+}
+
+
+
+.bullet2 {
+	width: 20px;
+	height: 50px;
+	/* background: red; */
+	-moz-border-radius: 100px / 50px;
+	-webkit-border-radius: 100px / 50px;
+    border-radius: 100px / 50px;
+    
+    background: linear-gradient(to middle, rgba(255,0,0,0), rgba(0,0,255,1));
+
+}
+
+/* Cleaner, but slightly less support: use "50%" as value */
+					
+.bullet2 {
+    background-color: #1a1bae;
+}
+
+
+
+.pause {
+    position:fixed;
+    background-color:rgba(20, 20, 20, 1);
+    /* width : 300px; */
+    /* height : 150px; */
+    margin-left : 20%;
+    margin-top : 10%; 
+    width : 60%;
+    height: 35%;
+    border: 2px solid #fff;
+    padding-top : 15%;
+    /* padding-left : 60%;  */
+    
+    /* float: center */
+    text-align: center;
+    vertical-align: middle;
+    /* line-height: 75%;     */
+}
+.pause span{
+    font-size: 35px;
+
+    /* display: inline-block;
+    margin-left:27%; */
+    /* margin-top:23%; */
+    
+
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.blink_me {
+    color: white;
+    /* height: 200px;
+    width: 200px; */
+    -webkit-animation-name: toggle;
+    -webkit-animation-duration: 1.5s;
+    -webkit-animation-timing-function: linear;
+    -webkit-animation-iteration-count: infinite;
+    -moz-animation-name: toggle;
+    -moz-animation-duration: 1.5s;
+    -moz-animation-timing-function: linear;
+    -moz-animation-iteration-count: infinite;
+    animation-name: toggle;
+    animation-duration: 1.5s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+  }
+
+  @keyframes toggle {
+           from {
+              opacity:1;
+           }
+       50% {
+              opacity:1;
+           }
+       to {
+              opacity:0;
+        }
+   }
+  @-webkit-keyframes toggle {
+           from {
+              opacity:1;
+           }
+       50% {
+              opacity:1;
+           }
+       to {
+              opacity:0;
+        }
+   }
+   .hidden .blink_me{
+    visibility: hidden;
+}
+
+
+
+.space-invader{
+
+    box-shadow:
+      0 0 0 1em red,
+      0 1em 0 1em red,
+      -2.5em 1.5em 0 .5em red,
+      2.5em 1.5em 0 .5em red,
+      -3em -3em 0 0 red,
+      3em -3em 0 0 red,
+      -2em -2em 0 0 red,
+      2em -2em 0 0 red,
+      -3em -1em 0 0 red,
+      -2em -1em 0 0 red,
+      2em -1em 0 0 red,
+      3em -1em 0 0 red,
+      -4em 0 0 0 red,
+      -3em 0 0 0 red,
+      3em 0 0 0 red,
+      4em 0 0 0 red,
+      -5em 1em 0 0 red,
+      -4em 1em 0 0 red,
+      4em 1em 0 0 red,
+      5em 1em 0 0 red,
+      -5em 2em 0 0 red,
+      5em 2em 0 0 red,
+      -5em 3em 0 0 red,
+      -3em 3em 0 0 red,
+      3em 3em 0 0 red,
+      5em 3em 0 0 red,
+      -2em 4em 0 0 red,
+      -1em 4em 0 0 red,
+      1em 4em 0 0 red,
+      2em 4em 0 0 red;
+  
+      background: red;
+      width: 1em;
+      height: 1em;
+      overflow: hidden;
+  
+      margin: 50px 0 70px 65px;
+    }
+  
+  .space-invader {
+      box-shadow: #ae1b1a 0px 0px 0px 1em, #ae1b1a 0px 1em 0px 1em, #ae1b1a -2.5em 1.5em 0px 0.5em, #ae1b1a 2.5em 1.5em 0px 0.5em, #ae1b1a -3em -3em 0px 0px, #ae1b1a 3em -3em 0px 0px, #ae1b1a -2em -2em 0px 0px, #ae1b1a 2em -2em 0px 0px, #ae1b1a -3em -1em 0px 0px, #ae1b1a -2em -1em 0px 0px, #ae1b1a 2em -1em 0px 0px, #ae1b1a 3em -1em 0px 0px, #ae1b1a -4em 0px 0px 0px, #ae1b1a -3em 0px 0px 0px, #ae1b1a 3em 0px 0px 0px, #ae1b1a 4em 0px 0px 0px, #ae1b1a -5em 1em 0px 0px, #ae1b1a -4em 1em 0px 0px, #ae1b1a 4em 1em 0px 0px, #ae1b1a 5em 1em 0px 0px, #ae1b1a -5em 2em 0px 0px, #ae1b1a 5em 2em 0px 0px, #ae1b1a -5em 3em 0px 0px, #ae1b1a -3em 3em 0px 0px, #ae1b1a 3em 3em 0px 0px, #ae1b1a 5em 3em 0px 0px, #ae1b1a -2em 4em 0px 0px, #ae1b1a -1em 4em 0px 0px, #ae1b1a 1em 4em 0px 0px, #ae1b1a 2em 4em 0px 0px;
+      background-color: #ae1b1a;
+  }
