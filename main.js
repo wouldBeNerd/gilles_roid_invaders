@@ -11,7 +11,15 @@ let audio = {
     player_2_shoot_audio: new Audio("./audio/shoot.wav"),
     player_1_got_hit_audio : new Audio("./audio/explosion.wav"),
     player_2_got_hit_audio : new Audio("./audio/explosion.wav"),
-    invader_killed_audio : new Audio("./audio/invaderkilled.wav")
+    invader_killed_audio : new Audio("./audio/invaderkilled.wav"),
+    lvl_boss_move : new Audio("./audio/lvl_boss_new.mp3"),
+    //voice sounds from https://lingojam.com/RobotVoiceGenerator
+    one_up_player_1 : new Audio("./audio/one_up_player_1.wav"),
+    one_up_player_2 : new Audio("./audio/one_up_player_2.wav"),
+    fire_rate_player_1 : new Audio("./audio/fire_rate_player_1.wav"),
+    fire_rate_player_2 : new Audio("./audio/fire_rate_player_2.wav"),
+    speed_player_1 : new Audio("./audio/speed_player_1.wav"),
+    speed_player_2 : new Audio("./audio/speed_player_2.wav"),
 }
 audio.play_enemies_move = function(){
     if(audio.mute){ return ;}
@@ -34,7 +42,12 @@ audio.player_2_got_hit = function(){
 audio.invader_killed = function(){
     audio.invader_killed_audio.play()
 }
-
+audio.lvl_boss_move_play = function(){
+    audio.lvl_boss_move.play()
+}
+audio.lvl_boss_move_pause = function(){
+    audio.lvl_boss_move.pause()
+}
 
 
 
@@ -126,6 +139,7 @@ function player_icon(parent, className, inner_before ,inner_after, color){
 function create_player_1(){
     let player_WH = 80
     let player_1 = {
+        name: "1",
         invincible : false,
         invincible_dur : 0,
         ele : create_player(stage_ele, "player1"),
@@ -232,6 +246,7 @@ let player_1 = create_player_1()
 function create_player_2(){
     let player_WH = 80
     let player_2 = {
+        name: "2",        
         ele : create_player(stage_ele, "player2"),
         y : 0,
         x : 0,
@@ -378,6 +393,25 @@ let enemy = {
         random_attack_ms : 9000,
         bullets : [],
         bullet_speed : 10,
+        lvl_boss : {
+            points : 500,
+            y : 80, 
+            x : 0,
+            width : 80,
+            height : 80,
+            speed : 7,
+            cooldown : 5000 + Math.floor(Math.random()*5000),
+            next_timestamp : 0,
+            alive : false,
+            spawned : false,
+            shoot_cooldown : 750,
+            shoot_next_timestamp : 0,
+            bullets:[],
+            bullet_speed : 20,
+            bullet_CC_bool : true,
+            laps : 2,
+            laps_count : 3
+        }
     }
     enemies.alive = enemies.line_count * enemies.rows
     enemies.max_alive = enemies.line_count * enemies.rows
@@ -385,9 +419,9 @@ let enemy = {
         // enemies.step_CD = (enemies.alive * 10) + (enemies.step_down * 10);
         // enemies.step_down = enemies.step_down - 4;
         let factor = ( enemies.alive / enemies.max_alive )
-        enemies.step_CD = (enemies.step_CD ) * (1 - (factor / 2)) ;
+        enemies.step_CD = (enemies.step_CD ) * (1 - (factor / 4)) ;
         // enemies.step_factor = (enemies.step_factor * 2)
-    }
+    }    
     function create_enemy(parent, x, y){
     
         if(enemies.rightest_x < x){ enemies.rightest_x = x;}
@@ -499,11 +533,71 @@ let enemy = {
         }
     }
 
+    function create_lvl_boss(parent, x, y){
+    
+        if(enemies.rightest_x < x){ enemies.rightest_x = x;}
+        if(enemies.leftest_x > x){ enemies.leftest_x = x;}
 
-
-
-
-
+        let enemy_ele = document.createElement("div");
+        enemy_ele.className = "lvl_boss";
+        parent.appendChild(enemy_ele)
+        enemy_ele.style.left = x+"px";
+        enemy_ele.style.top = y+"px";
+        enemy_ele.style.width = enemy.width+"px";
+        enemy_ele.style.height = enemy.height+"px";
+        return enemy_ele
+    }
+    enemies.lvl_boss.update_next_live = function(timestamp){
+        let boss = enemies.lvl_boss
+        // boss.cooldown = 5000 + Math.floor(Math.random()*5000)
+        // boss.next_timestamp = timestamp + boss.cooldown        
+        boss.spawned = false
+    } 
+    enemies.lvl_boss.live = function(timestamp){
+        let boss = enemies.lvl_boss
+        //make boss when time comes
+        // if(game.lvl === 1 && boss.spawned === false && timestamp > 5000){
+            // boss.ele = create_lvl_boss(stage_ele, boss.x, boss.y)
+            // boss.alive = true;
+            // boss.spawned = true;
+            // boss.laps_count = boss.laps      
+            // audio.lvl_boss_move_play()
+                  
+        // }
+        if((enemies.max_alive/2) > enemies.alive  && boss.spawned === false){
+            boss.ele = create_lvl_boss(stage_ele, boss.x, boss.y)
+            boss.alive = true;
+            boss.spawned = true;
+            boss.laps_count = boss.laps      
+            audio.lvl_boss_move_play()   
+        }
+        //remove boss after 3 laps
+        if(boss.laps_count === 0 && (boss.x > width + 200 || boss.x < -200) && boss.alive){
+            boss.kill()
+        }
+    }
+    enemies.lvl_boss.move = function(){
+        let boss = enemies.lvl_boss;
+        if(boss.alive){
+            if((boss.x > width || boss.x < -100) && boss.laps_count > 0){
+                boss.laps_count--;
+                boss.speed = boss.speed * -1
+            } 
+            boss.x += boss.speed
+            boss.ele.style.left = boss.x+"px"
+        }
+    }
+    enemies.lvl_boss.kill = function(){
+        let boss = enemies.lvl_boss;
+        boss.alive = false;
+        boss.ele.parentNode.removeChild(boss.ele)
+        audio.lvl_boss_move_pause()
+        if(boss.speed > 0){
+            boss.x = 0 - boss.width
+        }else{
+            boss.x = width + boss.width
+        }
+    }
 
 
 
@@ -545,8 +639,20 @@ let enemy = {
 
 
 
+function random_perk(player){
+    function play_effect_audio(sound_name){
+        audio[sound_name +"_player_"+ player.name].play();
+    }
+    let perk_arr = [
+        function(){ player.speed = player.speed + 3 ; play_effect_audio("speed");},
+        function(){player.bullet_count++; player.bullet_count++; player.bullet_CD = (player.bullet_CD / 5 * 3.5); play_effect_audio("fire_rate");},
+        function(){player.bullet_count++; player.bullet_count++; player.bullet_CD = (player.bullet_CD / 5 * 3.5); play_effect_audio("fire_rate");},
+        function(){ player.add_lives(1); play_effect_audio("one_up");},
+        function(){ player.add_lives(1); play_effect_audio("one_up");},
+    ]
+    perk_arr[Math.floor(Math.random()*perk_arr.length)]()
 
-
+}
 
 
 function check_vertical(y, y_min, y_max){
@@ -560,6 +666,27 @@ function check_horizontal(x, x_min, x_max){
 function check_bullet_collision(){
     player_1.bullets.forEach(function(bullet, b_i){
         let bullet_collided = false;
+
+        let boss = enemies.lvl_boss
+        if(boss.alive && bullet.alive){
+            if( bullet_collided ){ return;}            
+            if( check_vertical(bullet.y, boss.y, boss.y + boss.height) ){
+                if( check_horizontal(bullet.x , boss.x, boss.x + boss.width) ){
+                    bullet_collided = true;
+                    bullet.alive = false;
+                    
+                    stage_ele.removeChild(bullet.ele)
+                    delete bullet.ele;
+
+                    boss.kill()
+                    random_perk(player_1)
+                    player_1.add_score(boss.points)
+                    audio.invader_killed()                             
+                    return;
+                }                
+            }
+        }
+
         enemies.arr.forEach(function(row_arr, r_i){
             if(bullet_collided){ return;}
             row_arr.forEach(function(ene){
@@ -590,6 +717,28 @@ function check_bullet_collision(){
     
     player_2.bullets.forEach(function(bullet, b_i){
         let bullet_collided = false;
+
+        let boss = enemies.lvl_boss
+        if(boss.alive && bullet.alive){
+            if( bullet_collided ){ return;}
+            
+            if( check_vertical(bullet.y, boss.y, boss.y + boss.height) ){
+                if( check_horizontal(bullet.x , boss.x, boss.x + boss.width) ){
+                    bullet_collided = true;
+                    bullet.alive = false;
+                    
+                    stage_ele.removeChild(bullet.ele)
+                    delete bullet.ele;
+
+                    boss.kill()
+                    random_perk(player_2)
+                    player_2.add_score(boss.points)
+                    audio.invader_killed()                             
+                    return;
+                }                
+            }
+        }
+
         enemies.arr.forEach(function(row_arr, r_i){
             if(bullet_collided){ return;}
             row_arr.forEach(function(ene){
@@ -641,11 +790,17 @@ function remove_the_dead(){
 
 }
 
-
+let enemy_bullet_CC_bool = true;
 function enemy_shoot(ene){
     if(ene.y < height){
         let bullet = document.createElement("div")
-        bullet.classList.add("enemy_bullet")    
+        if(enemy_bullet_CC_bool){
+            bullet.classList.add("enemy_bullet")   
+            enemy_bullet_CC_bool = !enemy_bullet_CC_bool 
+        }else{
+            bullet.classList.add("enemy_bullet_CC")    
+            enemy_bullet_CC_bool = !enemy_bullet_CC_bool             
+        }
         let random_x = Math.floor(Math.random()*enemy.width)
         let x = (ene.x + random_x);
         let y = (ene.y + enemy.height)
@@ -660,6 +815,31 @@ function enemy_shoot(ene){
         })
     }
 }
+function lvl_boss_shoot(){
+    let boss = enemies.lvl_boss;
+
+        let bullet = document.createElement("div")
+        if(boss.bullet_CC_bool){
+            bullet.classList.add("lvl_boss_bullet")   
+            boss.bullet_CC_bool = !boss.bullet_CC_bool 
+        }else{
+            bullet.classList.add("lvl_boss_bullet_CC")    
+            boss.bullet_CC_bool = !boss.bullet_CC_bool             
+        }
+        let random_x = Math.floor(Math.random()*boss.width)
+        let x = (boss.x + random_x);
+        let y = (boss.y + boss.height)
+        bullet.style.left = x+"px"
+        bullet.style.top = y+"px"
+        stage_ele.appendChild(bullet)
+        boss.bullets.push({
+            alive : true,
+            x : x,
+            y : y,
+            ele : bullet
+        })
+    
+}
 enemies.check_shoot_time = function(timestamp){
     enemies.arr.forEach(function(row_arr){
         row_arr.forEach(function(ene){
@@ -672,6 +852,11 @@ enemies.check_shoot_time = function(timestamp){
             }
         })
     })
+    let boss = enemies.lvl_boss
+    if(boss.alive && timestamp > boss.shoot_next_timestamp){
+        lvl_boss_shoot()
+        boss.shoot_next_timestamp = timestamp + boss.shoot_cooldown;
+    }
 }
 
 enemies.move_bullets = function(){
@@ -686,11 +871,28 @@ enemies.move_bullets = function(){
             }
         }
     })
+    let boss = enemies.lvl_boss
+    boss.bullets.forEach(function(bullet){
+        if(bullet.alive){
+            bullet.y = bullet.y + boss.bullet_speed;
+            if(bullet.y > height){
+                bullet.alive = false
+                stage_ele.removeChild(bullet.ele)
+            }else{
+                bullet.ele.style.top = bullet.y+"px"
+            }
+        }        
+    })    
+
 }
 enemies.remove_dead_bullets = function(){
     enemies.bullets = enemies.bullets.filter(function(bullet){
         if(bullet.alive) return bullet
     })
+    let boss = enemies.lvl_boss
+    boss.bullets = boss.bullets.filter(function(bullet){
+        if(bullet.alive) return bullet
+    })    
 }
 enemies.detect_bullets_collide = function(){
     enemies.bullets.forEach(function(bullet){
@@ -711,7 +913,29 @@ enemies.detect_bullets_collide = function(){
         }
     }        
     })
+    let boss = enemies.lvl_boss
+    boss.bullets.forEach(function(bullet){
+        if(bullet.y >= player_1.y && bullet.alive){
+            if(bullet.x > player_1.left_hitbox + player_1.x && bullet.x < player_1.right_hitbox  + player_1.x ){
+                  bullet.alive = false
+                  stage_ele.removeChild(bullet.ele)                
+                  player_1.remove_lives(1)
+  
+            }
+        }  
+        if(bullet.y >= player_2.y && bullet.alive){
+          if(bullet.x > player_2.left_hitbox + player_2.x && bullet.x < player_2.right_hitbox  + player_2.x ){
+                bullet.alive = false
+                stage_ele.removeChild(bullet.ele)                
+                player_2.remove_lives(1)
+          }
+      }        
+      })        
 }
+
+
+
+
 
 
 
@@ -831,6 +1055,7 @@ function next_lvl(timestamp){
         enemies.max_alive = enemies.line_count * enemies.rows        
         enemies.step_CD = 500 - ( game.lvl * 20 )         
         enemies.create();
+        enemies.lvl_boss.next_timestamp = timestamp + enemies.lvl_boss.cooldown
         game.next_lvl_pause = false        
 
     }
@@ -948,9 +1173,12 @@ function step(timestamp) {
                 check_bullet_collision()
                 remove_the_dead()
                 enemies.check_shoot_time(timestamp)
+                enemies.lvl_boss.live(timestamp)
+                enemies.lvl_boss.move()
             }else{
                 //start next lvl
                 next_lvl(timestamp)
+                enemies.lvl_boss.update_next_live(timestamp + game.next_lvl_cd)
             }
         }    
     }

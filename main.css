@@ -45,7 +45,7 @@ span {
 
 .right {
     position : relative;
-    
+    text-align: right;
     float: right;
 }
 .middle {
@@ -84,6 +84,10 @@ span {
     content:url("./assets/enemy.png");
     position: fixed;    
 }
+.lvl_boss {
+    content:url("./assets/lvl_boss.png");
+    position: fixed;    
+}
 
 @keyframes rotate_continuous {
     from {
@@ -99,8 +103,8 @@ span {
 }
 
 .enemy_bullet {
-    width : 18px;
-    height : 18px;
+    width : 1.1%;
+    height : auto;
     content:url("./assets/enemy.png");
 
     animation-name : rotate_continuous;
@@ -108,7 +112,49 @@ span {
     animation-iteration-count:  infinite;
     
 }
+.lvl_boss_bullet {
+    width : 1.1%;
+    height : auto;
+    content:url("./assets/lvl_boss_bullet.png");
 
+    animation-name : rotate_continuous;
+    animation-duration : 10s;
+    animation-iteration-count:  infinite;
+    
+}
+@keyframes rotate_continuous_CC {
+    from {
+        transform: rotate(360deg);
+        transform-origin: center;
+    
+    }
+    to {
+        transform: rotate(0deg);
+        transform-origin: center;
+    
+    }
+}
+
+.enemy_bullet_CC {
+    width : 1.1%;
+    height : auto;
+    content:url("./assets/enemy.png");
+
+    animation-name : rotate_continuous_CC;
+    animation-duration : 10s;
+    animation-iteration-count:  infinite;
+    
+}
+.lvl_boss_bullet_CC {
+    width : 1.1%;
+    height : auto;
+    content:url("./assets/lvl_boss_bullet.png");
+
+    animation-name : rotate_continuous_CC;
+    animation-duration : 10s;
+    animation-iteration-count:  infinite;
+    
+}
 .bullet1 {
 	width: 20px;
 	height: 50px;
@@ -116,7 +162,7 @@ span {
 	-moz-border-radius: 100px / 50px;
 	-webkit-border-radius: 100px / 50px;
     border-radius: 100px / 50px;
-    
+
     background: linear-gradient(to middle, rgba(255,0,0,0), rgba(255,0,0,1));
 
 }
@@ -155,9 +201,9 @@ span {
     margin-left : 20%;
     margin-top : 10%; 
     width : 60%;
-    height: 35%;
+    height: 45%;
     border: 2px solid #fff;    
-    padding-top: 25px;
+    padding-top: 3em;
 
     text-align: center;
     vertical-align: middle; 
@@ -171,7 +217,7 @@ span {
     /* vertical-align: middle;      */
     background-color: rgba(120, 120, 120, 0);
     cursor: pointer;
-    margin-bottom : 50px;
+    margin-bottom : 2em;
 }
 .menu_bt :hover{
     background-color:rgba(120, 120, 120, 1);    
@@ -190,7 +236,7 @@ span {
     display : block;
     position: relative;
     text-align: center;
-    margin-bottom : 45px;
+    margin-bottom : 2em;
     background-color: rgba(120, 120, 120, 0);
     
     /* vertical-align: middle;  */
@@ -201,7 +247,7 @@ span {
     display : inline-block;
     position: relative;
     width : auto;
-    margin-bottom : 25px;
+    margin-bottom : 1em;
     background-color: rgba(120, 120, 120, 0);
     
     
@@ -225,7 +271,7 @@ span {
     /* line-height: 75%;     */
 }
 .pause span{
-    font-size: 35px;
+    font-size: 1.5em;
 
     /* display: inline-block;
     margin-left:27%; */
