@@ -535,8 +535,8 @@ let enemy = {
 
     function create_lvl_boss(parent, x, y){
     
-        if(enemies.rightest_x < x){ enemies.rightest_x = x;}
-        if(enemies.leftest_x > x){ enemies.leftest_x = x;}
+        // if(enemies.rightest_x < x){ enemies.rightest_x = x;}
+        // if(enemies.leftest_x > x){ enemies.leftest_x = x;}
 
         let enemy_ele = document.createElement("div");
         enemy_ele.className = "lvl_boss";
@@ -555,15 +555,6 @@ let enemy = {
     } 
     enemies.lvl_boss.live = function(timestamp){
         let boss = enemies.lvl_boss
-        //make boss when time comes
-        // if(game.lvl === 1 && boss.spawned === false && timestamp > 5000){
-            // boss.ele = create_lvl_boss(stage_ele, boss.x, boss.y)
-            // boss.alive = true;
-            // boss.spawned = true;
-            // boss.laps_count = boss.laps      
-            // audio.lvl_boss_move_play()
-                  
-        // }
         if((enemies.max_alive/2) > enemies.alive  && boss.spawned === false){
             boss.ele = create_lvl_boss(stage_ele, boss.x, boss.y)
             boss.alive = true;
@@ -590,6 +581,7 @@ let enemy = {
     enemies.lvl_boss.kill = function(){
         let boss = enemies.lvl_boss;
         boss.alive = false;
+        boss.laps_count = 3
         boss.ele.parentNode.removeChild(boss.ele)
         audio.lvl_boss_move_pause()
         if(boss.speed > 0){
